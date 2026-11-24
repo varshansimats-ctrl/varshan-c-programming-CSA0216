@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agal – Online Grocery Billing & Order Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+Tamil:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#fbf6ec;--ink:#22201a;--mute:#7a7261;--card:#fffdf8;--line:#ece3d0;--green:#1f5d46;--green2:#2f7d60;--gold:#e8a317;--gold2:#fbe7b0;--red:#c8452b;--r:18px}
+*{box-sizing:border-box;margin:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+h1,h2,h3,.serif{font-family:Fraunces,serif}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit;color:var(--ink);caret-color:var(--green);-webkit-text-fill-color:var(--ink);padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%;outline:none}
+input::placeholder{color:var(--mute);-webkit-text-fill-color:var(--mute);opacity:.7}
+input:focus,select:focus{border-color:var(--green2)}
+.btn{border:0;background:var(--green);color:#fff;padding:11px 18px;border-radius:12px;font-weight:700}
+.btn:hover{background:var(--green2)}
+.btn.gold{background:var(--gold);color:#2b2105}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn.red{background:var(--red)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:9px}
+.logo{font-family:Fraunces,serif;font-weight:700;font-size:30px;color:var(--green);letter-spacing:.5px}
+.logo span{color:var(--gold)}
+
+.brand{display:flex;align-items:center;gap:.32em;font-size:28px;color:var(--green);line-height:1}
+.brand svg{height:1.5em;width:1.5em;overflow:visible;flex:none}
+.brand .fl{transform-origin:24px 22px;animation:flick 2.4s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:scale(1,1) rotate(0)}30%{transform:scale(.94,1.06) rotate(-2deg)}60%{transform:scale(1.03,.96) rotate(2deg)}}
+.brand .col{display:flex;flex-direction:column;gap:.18em}
+.brand .w{font-family:Fraunces,serif;font-weight:700;font-size:1.05em;letter-spacing:.04em}
+.brand .w i{font-style:normal;color:var(--gold)}
+.brand .t{font-family:'Noto Sans Tamil',sans-serif;font-weight:500;font-size:.34em;letter-spacing:.38em;opacity:.7;padding-left:.2em}
+.lhero .brand{font-size:58px;color:#fff}.side .brand{font-size:30px;color:#fff;padding:0 8px 18px}
+/* login */
+.login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.lhero{background:radial-gradient(circle at 20% 20%,#2f7d60,#173f31 70%);color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:center;gap:18px;position:relative;overflow:hidden}
+.lhero h2{font-size:30px;font-weight:600;max-width:420px;line-height:1.25}
+.lhero p{opacity:.8;max-width:420px}
+.floaty{position:absolute;font-size:56px;opacity:.18}
+.lform{display:grid;place-items:center;padding:30px}
+.lbox{width:min(400px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 20px 50px rgba(60,40,0,.08)}
+.tabs{display:flex;background:var(--gold2);border-radius:999px;padding:4px;margin:16px 0}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:999px;font-weight:700;color:var(--mute)}
+.tabs button.on{background:var(--green);color:#fff}
+.fld{margin:10px 0}.fld label{font-size:13px;color:var(--mute);display:block;margin-bottom:4px}
+.hint{font-size:12.5px;background:var(--gold2);padding:9px 12px;border-radius:10px;margin-top:12px;color:#5a4608}
+.err{color:var(--red);font-size:13px;margin-top:8px;min-height:16px}
+.link{color:var(--green);font-weight:700;cursor:pointer;background:none;border:0;padding:0}
+/* top bar */
+header{position:sticky;top:0;z-index:5;background:rgba(251,246,236,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1150px;margin:auto;display:flex;align-items:center;gap:14px;padding:12px 20px}
+.bar .grow{flex:1}
+.pill{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:500}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.badge{background:var(--gold);color:#2b2105;border-radius:999px;padding:1px 8px;margin-left:6px;font-size:12px;font-weight:700}
+.wrap{max-width:1150px;margin:auto;padding:22px 20px 60px}
+.hero{border-radius:26px;padding:34px 36px;background:linear-gradient(115deg,var(--green),#174636);color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:16px}
+.hero h1{font-size:clamp(26px,4vw,40px);line-height:1.15;max-width:520px}
+.hero p{opacity:.85;margin-top:8px}.hero .big{font-size:84px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(60,40,0,.08)}
+.pimg{height:120px;display:grid;place-items:center;font-size:58px;background:var(--gold2)}
+.pinfo{padding:13px;display:flex;flex-direction:column;gap:3px;flex:1}
+.pinfo small{color:var(--mute)}
+.prow{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}
+.price{font-weight:700;font-size:18px}
+.low{color:var(--red);font-size:12px;font-weight:700}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+/* drawer & modal */
+.shade{position:fixed;inset:0;background:rgba(20,15,0,.4);z-index:20;display:none}.shade.on{display:block}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(410px,100%);background:#fff;z-index:21;transform:translateX(105%);transition:.25s;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.dh{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:20px}
+.items{flex:1;overflow:auto;padding:6px 20px}
+.it{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.it .e{font-size:30px}.it .n{flex:1}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.df{padding:18px 20px;border-top:1px solid var(--line)}
+.ln{display:flex;justify-content:space-between;margin:4px 0;color:var(--mute)}.ln.t{color:var(--ink);font-weight:700;font-size:18px}
+.modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:rgba(20,15,0,.5);padding:16px}.modal.on{display:grid}
+.mb{background:#fff;border-radius:22px;padding:26px;width:min(480px,100%);max-height:92vh;overflow:auto}
+.mb h2{margin-bottom:10px}
+.empty{text-align:center;color:var(--mute);padding:34px}
+.status{padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700;background:var(--gold2);color:#6b5000;white-space:nowrap}
+.status.Delivered{background:#d7efe2;color:#17573f}.status.Cancelled{background:#f8dcd5;color:#9a2c16}.status.Out{background:#dbe8f7;color:#1c4d80}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;z-index:50;display:none}
+/* admin */
+.admin{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{background:#173f31;color:#fff;padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.side button{background:none;border:0;color:#cfe3d9;text-align:left;padding:11px 14px;border-radius:12px;font-size:15px}
+.side button.on,.side button:hover{background:rgba(255,255,255,.12);color:#fff}
+.side .sp{flex:1}
+.main{padding:26px 28px 60px;overflow:auto}
+.main h1{font-size:30px;margin-bottom:4px}.sub{color:var(--mute);margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.stat small{color:var(--mute)}.stat b{display:block;font-size:26px;margin-top:4px;font-family:Fraunces,serif}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;color:var(--mute);font-weight:500;padding:10px 8px;border-bottom:1px solid var(--line)}
+td{padding:11px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar2{display:flex;align-items:center;gap:10px;font-size:14px}.bar2 .l{width:84px;color:var(--mute)}
+.bar2 .f{height:14px;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--green2))}
+.pos{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;max-height:520px;overflow:auto;margin-top:12px}
+.pcell{border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;background:#fff;cursor:pointer}
+.pcell:hover{border-color:var(--green2)}.pcell .e{font-size:30px}.pcell small{display:block;color:var(--mute)}
+.invoice{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+.invoice hr{border:0;border-top:1px dashed #b7ac92;margin:10px 0}
+.invoice .r{display:flex;justify-content:space-between}
+@media(max-width:820px){.login{grid-template-columns:1fr}.lhero{padding:34px;min-height:240px}.lhero .brand{font-size:44px}.admin{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap}.side .brand{width:100%;padding-bottom:6px}.side .sp{display:none}.two,.pos{grid-template-columns:1fr}.hero .big{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="gfl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#e8741a"/></linearGradient></defs></svg>
+<div id="app"></div>
+<div class="shade" id="shade"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="modal" id="modal"><div class="mb" id="mb"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- data layer ---------- */
+const KEY="agal_db_v1";
+const P0=[
+["Basmati Rice","Staples","5 kg",549,40,"🍚"],["Toor Dal","Staples","1 kg",165,35,"🫘"],["Wheat Atta","Staples","5 kg",259,50,"🌾"],
+["Sugar","Staples","1 kg",48,60,"🧂"],["Sunflower Oil","Staples","1 L",145,30,"🛢️"],["Iodised Salt","Staples","1 kg",25,80,"🧂"],
+["Full Cream Milk","Dairy","1 L",68,45,"🥛"],["Amul Butter","Dairy","500 g",285,20,"🧈"],["Fresh Paneer","Dairy","200 g",90,25,"🧀"],["Farm Eggs","Dairy","12 pcs",84,40,"🥚"],
+["Onion","Vegetables","1 kg",40,70,"🧅"],["Tomato","Vegetables","1 kg",35,60,"🍅"],["Potato","Vegetables","1 kg",30,80,"🥔"],["Green Chilli","Vegetables","100 g",15,8,"🌶️"],
+["Banana","Fruits","12 pcs",60,50,"🍌"],["Apple","Fruits","1 kg",180,30,"🍎"],["Mango (Alphonso)","Fruits","1 kg",320,6,"🥭"],
+["Assam Tea","Pantry","500 g",245,25,"🍵"],["Turmeric Powder","Pantry","100 g",40,45,"🟡"],["Masala Biscuits","Pantry","1 pack",30,100,"🍪"],["Instant Noodles","Pantry","1 pack",14,120,"🍜"]
+].map((a,i)=>({id:i+1,name:a[0],cat:a[1],unit:a[2],price:a[3],stock:a[4],emoji:a[5]}));
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!db||!db.products)db={products:P0,orders:[],users:[{name:"Demo Customer",email:"customer@agal.in",pass:"cust123"}],seq:1000};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}};
+const ADMIN={user:"admin",pass:"admin123"};
+
+const BRAND=()=>`<div class="brand"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="fl" d="M24 3C30 11 32 15.5 28.5 20.5 26.5 23 21.5 23 19.5 20.5 16 15.5 18.5 11 24 3Z" fill="url(#gfl)"/><path class="fl" d="M24 12C27 15.5 27 18.5 24.5 20.4 22 18.5 21.5 15.5 24 12Z" fill="#fff4c9"/><path d="M4.5 26C14 23.5 34 23.5 43.5 26 42.5 36.5 34.5 42.5 24 42.5 13.5 42.5 5.5 36.5 4.5 26Z" fill="currentColor"/><path d="M4.5 26C1.5 25.5 0 23.5 1 21c2.5 1.8 5.5 2.8 8.5 3.4Z" fill="currentColor"/><path d="M11 30.2Q24 34.8 37 30.2" stroke="#e8a317" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="24" cy="36.2" r="1.5" fill="#e8a317"/><rect x="17.5" y="42" width="13" height="3.2" rx="1.6" fill="currentColor"/></svg><div class="col"><div class="w">Aga<i>l</i></div><div class="t">அகல்</div></div></div>`;
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:0,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toast=m=>{const t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display="none",2200)};
+const prod=id=>db.products.find(p=>p.id==id);
+const statusCls=s=>s.startsWith("Out")?"Out":s;
+function calc(lines,delivery){
+  const sub=lines.reduce((s,l)=>s+l.price*l.qty,0);
+  const gst=Math.round(sub*0.05*100)/100;
+  const del=delivery&&sub>0&&sub<499?40:0;
+  return{sub,gst,del,total:sub+gst+del};
+}
+const CATS=()=>["All",...new Set(db.products.map(p=>p.cat))];
+
+/* ---------- session + role guard ---------- */
+let S=null,cart={},bill={},cat="All",term="",ctab="shop",atab="dash";
+const isAdmin=()=>S&&S.role==="admin";
+const isCust=()=>S&&S.role==="customer";
+function needAdmin(){if(!isAdmin()){toast("⛔ Access denied – admin only");return false}return true}
+
+/* ---------- modal / drawer ---------- */
+function modal(html){$("mb").innerHTML=html;$("modal").classList.add("on")}
+function closeModal(){$("modal").classList.remove("on")}
+$("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+function drawer(o){$("drawer").classList.toggle("open",o);$("shade").classList.toggle("on",o)}
+$("shade").onclick=()=>drawer(false);
+
+/* ---------- login ---------- */
+let lrole="customer",lmode="login";
+function renderLogin(msg=""){
+  const cust=lrole==="customer",reg=cust&&lmode==="register";
+  $("app").innerHTML=`<div class="login">
+  <div class="lhero"><div class="floaty" style="top:8%;left:70%">🍅</div><div class="floaty" style="top:70%;left:8%">🥭</div><div class="floaty" style="top:40%;left:82%">🌾</div><div class="floaty" style="top:84%;left:60%">🥛</div>
+    ${BRAND()}
+    <h2>Fresh groceries, billed &amp; delivered with care.</h2>
+    <p>Online Grocery Billing and Order Management System — shop as a customer or run the store as an admin.</p></div>
+  <div class="lform"><div class="lbox">
+    <h2 class="serif" style="font-size:26px">${reg?"Create account":"Welcome back"}</h2>
+    <div class="tabs"><button class="${cust?"on":""}" data-act="lrole" data-v="customer">Customer</button><button class="${!cust?"on":""}" data-act="lrole" data-v="admin">Admin</button></div>
+    <form id="lf">
+      ${reg?`<div class="fld"><label>Full name</label><input id="ln" required></div>`:""}
+      <div class="fld"><label>${cust?"Email":"Username"}</label><input id="lu" ${cust?'type="email"':""} required autocomplete="off"></div>
+      <div class="fld"><label>Password</label><input id="lp" type="password" required></div>
+      <div class="err">${msg}</div>
+      <button class="btn" style="width:100%;margin-top:6px">${reg?"Sign up":"Log in as "+(cust?"Customer":"Admin")}</button>
+    </form>
+    ${cust?`<p style="text-align:center;margin-top:14px;font-size:14px;color:var(--mute)">${reg?"Have an account?":"New to Agal?"} <button class="link" data-act="lmode">${reg?"Log in":"Create one"}</button></p>`:""}
+    <div class="hint">${cust?"Demo → customer@agal.in / cust123":"Demo → admin / admin123"}</div>
+  </div></div></div>`;
+  $("lf").onsubmit=e=>{e.preventDefault();
+    const u=$("lu").value.trim(),p=$("lp").value;
+    if(!cust){ if(u===ADMIN.user&&p===ADMIN.pass){S={role:"admin",name:"Store Owner"};atab="dash";render()} else renderLogin("Wrong admin credentials."); return}
+    if(reg){const n=$("ln").value.trim();
+      if(db.users.some(x=>x.email===u.toLowerCase()))return renderLogin("Email already registered.");
+      if(p.length<4)return renderLogin("Password must be 4+ characters.");
+      db.users.push({name:n,email:u.toLowerCase(),pass:p});save();S={role:"customer",name:n,email:u.toLowerCase()};ctab="shop";render();return}
+    const us=db.users.find(x=>x.email===u.toLowerCase()&&x.pass===p);
+    if(us){S={role:"customer",name:us.name,email:us.email};ctab="shop";render()} else renderLogin("Invalid email or password.");
+  };
+}
+function logout(){S=null;cart={};bill={};drawer(false);lrole="customer";lmode="login";render()}
+
+/* ---------- customer UI ---------- */
+function renderCustomer(){
+  const n=Object.values(cart).reduce((a,b)=>a+b,0);
+  let body="";
+  if(ctab==="shop"){
+    const l=db.products.filter(p=>(cat==="All"||p.cat===cat)&&p.name.toLowerCase().includes(term));
+    body=`<div class="hero"><div><h1>Fresh from the farm to your kitchen</h1><p>Free delivery on orders above ₹499 · 5% GST included in bill</p></div><div class="big">🧺</div></div>
+    <div class="chips">${CATS().map(c=>`<button class="pill ${c===cat?"on":""}" data-act="cat" data-v="${c}">${c}</button>`).join("")}</div>
+    <div class="grid">${l.length?l.map(p=>`<div class="card"><div class="pimg">${p.emoji}</div><div class="pinfo"><b>${esc(p.name)}</b><small>${esc(p.unit)} · ${esc(p.cat)}</small>${p.stock<=0?'<span class="low">Out of stock</span>':p.stock<10?`<span class="low">Only ${p.stock} left</span>`:""}
+      <div class="prow"><span class="price">${inr(p.price)}</span><button class="btn sm" ${p.stock<=0?"disabled style='opacity:.4'":""} data-act="add" data-v="${p.id}">Add</button></div></div></div>`).join(""):'<div class="empty">No products found.</div>'}</div>`;
+  } else {
+    const mine=db.orders.filter(o=>o.email===S.email).slice().reverse();
+    body=`<h1 style="margin-bottom:16px">My orders</h1>`+(mine.length?`<div class="panel"><table><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>${mine.map(o=>`<tr><td><b>${o.id}</b></td><td>${o.date}</td><td>${inr(o.total)}</td><td><span class="status ${statusCls(o.status)}">${o.status}</span></td><td><button class="btn ghost sm" data-act="invoice" data-v="${o.id}">View bill</button></td></tr>`).join("")}</table></div>`:'<div class="empty panel">No orders yet. Go fill your basket! 🧺</div>');
+  }
+  $("app").innerHTML=`<header><div class="bar">${BRAND()}
+    ${ctab==="shop"?`<input class="grow" id="q" placeholder="Search groceries..." value="${esc(term)}" style="border-radius:999px">`:'<div class="grow"></div>'}
+    <button class="pill ${ctab==="shop"?"on":""}" data-act="ctab" data-v="shop">Shop</button>
+    <button class="pill ${ctab==="orders"?"on":""}" data-act="ctab" data-v="orders">My orders</button>
+    <button class="btn" data-act="opencart">🛒 Cart<span class="badge">${n}</span></button>
+    <button class="pill" data-act="logout" title="${esc(S.name)}">Logout</button></div></header><div class="wrap">${body}</div>`;
+  const q=$("q");if(q){q.oninput=e=>{term=e.target.value.toLowerCase();const pos=e.target.selectionStart;renderCustomer();const q2=$("q");q2.focus();q2.setSelectionRange(pos,pos)}}
+  renderCart();
+}
+function cartLines(c){return Object.keys(c).filter(k=>c[k]>0&&prod(k)).map(k=>{const p=prod(k);return{id:p.id,name:p.name,unit:p.unit,emoji:p.emoji,price:p.price,qty:c[k]}})}
+function renderCart(){
+  const l=cartLines(cart),t=calc(l,true);
+  $("drawer").innerHTML=`<div class="dh"><b class="serif">Your cart</b><button class="pill" data-act="closecart">✕</button></div>
+  <div class="items">${l.length?l.map(x=>`<div class="it"><span class="e">${x.emoji}</span><div class="n"><div>${esc(x.name)}</div><small style="color:var(--mute)">${inr(x.price)} · ${esc(x.unit)}</small></div><div class="qty"><button data-act="cminus" data-v="${x.id}">−</button>${x.qty}<button data-act="cplus" data-v="${x.id}">+</button></div></div>`).join(""):'<div class="empty">Your cart is empty 🧺</div>'}</div>
+  <div class="df"><div class="ln"><span>Subtotal</span><span>${inr(t.sub)}</span></div><div class="ln"><span>GST (5%)</span><span>${inr(t.gst)}</span></div><div class="ln"><span>Delivery</span><span>${t.del?inr(t.del):"FREE"}</span></div><div class="ln t"><span>Total</span><span>${inr(t.total)}</span></div>
+  <button class="btn gold" style="width:100%;margin-top:12px" data-act="checkout">Checkout</button></div>`;
+}
+function checkoutForm(){
+  if(!isCust())return;
+  const t=calc(cartLines(cart),true);if(!t.sub)return toast("Cart is empty");
+  modal(`<h2 class="serif">Delivery details</h2><div class="fld"><label>Name</label><input id="cn" value="${esc(S.name)}"></div><div class="fld"><label>Phone</label><input id="cp" placeholder="10-digit mobile" inputmode="numeric"></div><div class="fld"><label>Address</label><input id="ca" placeholder="House no, street, city, PIN"></div>
+  <div class="fld"><label>Payment</label><select id="cm"><option>Cash on Delivery</option><option>UPI</option><option>Card</option></select></div>
+  <div class="ln t"><span>Amount payable</span><span>${inr(t.total)}</span></div><div class="err" id="ce"></div>
+  <div style="display:flex;gap:10px;margin-top:10px"><button class="btn ghost" data-act="closemodal">Cancel</button><button class="btn" style="flex:1" data-act="place">Place order</button></div>`);
+}
+function placeOrder(){
+  if(!isCust())return;
+  const nm=$("cn").value.trim(),ph=$("cp").value.trim(),ad=$("ca").value.trim();
+  if(!nm||!/^\d{10}$/.test(ph)||ad.length<6){$("ce").textContent="Enter name, a valid 10-digit phone and full address.";return}
+  const l=cartLines(cart);
+  for(const x of l){if(prod(x.id).stock<x.qty){$("ce").textContent=`Only ${prod(x.id).stock} of ${x.name} left.`;return}}
+  l.forEach(x=>prod(x.id).stock-=x.qty);
+  const t=calc(l,true),o={id:"AG"+(++db.seq),date:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),customer:nm,email:S.email,phone:ph,address:ad,pay:$("cm").value,channel:"Online",lines:l,...t,status:"Placed"};
+  db.orders.push(o);save();cart={};drawer(false);render();showInvoice(o.id,true);
+}
+
+/* ---------- invoice ---------- */
+function showInvoice(id,fresh){
+  const o=db.orders.find(x=>x.id===id);if(!o)return;
+  if(isCust()&&o.email!==S.email)return toast("⛔ Not your order");
+  modal(`${fresh?'<div style="text-align:center;font-size:44px">🎉</div><h2 class="serif" style="text-align:center">Order placed!</h2>':'<h2 class="serif">Bill</h2>'}
+  <div class="invoice panel" style="margin:12px 0"><div style="text-align:center"><b style="font-size:18px">AGAL GROCERIES</b><br>Tax Invoice</div><hr>
+  <div class="r"><span>Bill no</span><b>${o.id}</b></div><div class="r"><span>Date</span><span>${o.date}</span></div><div class="r"><span>Customer</span><span>${esc(o.customer)}</span></div><div class="r"><span>Channel</span><span>${o.channel} · ${o.pay}</span></div><hr>
+  ${o.lines.map(x=>`<div class="r"><span>${esc(x.name)} × ${x.qty}</span><span>${inr(x.price*x.qty)}</span></div>`).join("")}<hr>
+  <div class="r"><span>Subtotal</span><span>${inr(o.sub)}</span></div><div class="r"><span>GST 5%</span><span>${inr(o.gst)}</span></div><div class="r"><span>Delivery</span><span>${o.del?inr(o.del):"FREE"}</span></div><hr>
+  <div class="r" style="font-size:16px"><b>TOTAL</b><b>${inr(o.total)}</b></div></div>
+  <button class="btn" style="width:100%" data-act="closemodal">Close</button>`);
+}
+
+/* ---------- admin UI ---------- */
+const ST=["Placed","Packed","Out for delivery","Delivered","Cancelled"];
+function renderAdmin(){
+  if(!isAdmin())return logout();
+  const nav=[["dash","📊 Dashboard"],["inv","📦 Inventory"],["orders","🧾 Orders"],["pos","💳 Counter billing"],["cust","👥 Customers"]];
+  $("app").innerHTML=`<div class="admin"><nav class="side">${BRAND()}${nav.map(n=>`<button class="${atab===n[0]?"on":""}" data-act="atab" data-v="${n[0]}">${n[1]}</button>`).join("")}<div class="sp"></div><button data-act="logout">↩ Logout</button></nav><div class="main">${adminBody()}</div></div>`;
+}
+function adminBody(){
+  const live=db.orders.filter(o=>o.status!=="Cancelled");
+  if(atab==="dash"){
+    const rev=live.reduce((s,o)=>s+o.total,0),pend=db.orders.filter(o=>["Placed","Packed","Out for delivery"].includes(o.status)).length,low=db.products.filter(p=>p.stock<10);
+    const byCat={};live.forEach(o=>o.lines.forEach(l=>{const c=(prod(l.id)||{}).cat||"Other";byCat[c]=(byCat[c]||0)+l.price*l.qty}));
+    const mx=Math.max(1,...Object.values(byCat));
+    return `<h1>Dashboard</h1><div class="sub">Store overview</div>
+    <div class="stats"><div class="stat"><small>Total revenue</small><b>${inr(rev)}</b></div><div class="stat"><small>Total orders</small><b>${db.orders.length}</b></div><div class="stat"><small>Pending orders</small><b>${pend}</b></div><div class="stat"><small>Low-stock items</small><b>${low.length}</b></div></div>
+    <div class="two"><div class="panel"><h3>Sales by category</h3><br>${Object.keys(byCat).length?`<div class="bars">${Object.entries(byCat).map(([c,v])=>`<div class="bar2"><span class="l">${c}</span><div class="f" style="width:${v/mx*100}%"></div><b>${inr(v)}</b></div>`).join("")}</div>`:'<div class="empty">No sales yet</div>'}</div>
+    <div class="panel"><h3>Low stock alert</h3><br>${low.length?low.map(p=>`<div class="ln"><span>${p.emoji} ${esc(p.name)}</span><b style="color:var(--red)">${p.stock} left</b></div>`).join(""):'<div class="empty">All stocked up ✅</div>'}</div></div>`;
+  }
+  if(atab==="inv"){
+    return `<h1>Inventory</h1><div class="sub">Add, edit and remove products</div><div class="panel"><button class="btn" data-act="pform" data-v="0">+ Add product</button><br><br><table><tr><th></th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr>${db.products.map(p=>`<tr><td style="font-size:24px">${p.emoji}</td><td><b>${esc(p.name)}</b><br><small style="color:var(--mute)">${esc(p.unit)}</small></td><td>${esc(p.cat)}</td><td>${inr(p.price)}</td><td>${p.stock<10?`<b style="color:var(--red)">${p.stock}</b>`:p.stock}</td><td style="white-space:nowrap"><button class="btn ghost sm" data-act="pform" data-v="${p.id}">Edit</button> <button class="btn red sm" data-act="pdel" data-v="${p.id}">Delete</button></td></tr>`).join("")}</table></div>`;
+  }
+  if(atab==="orders"){
+    const l=db.orders.slice().reverse();
+    return `<h1>Orders</h1><div class="sub">Track and update order status</div><div class="panel">${l.length?`<table><tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>${l.map(o=>`<tr><td><b>${o.id}</b><br><small style="color:var(--mute)">${o.channel}</small></td><td>${esc(o.customer)}${o.address?`<br><small style="color:var(--mute)">${esc(o.address)}</small>`:""}</td><td>${o.date}</td><td>${inr(o.total)}</td><td><select data-act="ostatus" data-v="${o.id}" style="padding:6px;width:auto">${ST.map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}</select></td><td><button class="btn ghost sm" data-act="invoice" data-v="${o.id}">Bill</button></td></tr>`).join("")}</table>`:'<div class="empty">No orders yet.</div>'}</div>`;
+  }
+  if(atab==="pos"){
+    const l=cartLines(bill),t=calc(l,false);
+    return `<h1>Counter billing</h1><div class="sub">Create a bill for walk-in customers</div><div class="pos"><div class="panel"><input id="pq" placeholder="Search item..." oninput="posFilter(this.value)"><div class="plist" id="plist">${posList("")}</div></div>
+    <div class="panel"><h3>Current bill</h3><div class="fld"><input id="bn" placeholder="Customer name (optional)"></div>${l.length?l.map(x=>`<div class="it"><span class="e">${x.emoji}</span><div class="n">${esc(x.name)}<br><small style="color:var(--mute)">${inr(x.price)}</small></div><div class="qty"><button data-act="bminus" data-v="${x.id}">−</button>${x.qty}<button data-act="bplus" data-v="${x.id}">+</button></div></div>`).join(""):'<div class="empty">Tap items to add</div>'}
+    <br><div class="ln"><span>Subtotal</span><span>${inr(t.sub)}</span></div><div class="ln"><span>GST (5%)</span><span>${inr(t.gst)}</span></div><div class="ln t"><span>Total</span><span>${inr(t.total)}</span></div>
+    <div class="fld"><select id="bm"><option>Cash</option><option>UPI</option><option>Card</option></select></div><button class="btn gold" style="width:100%" data-act="genbill">Generate bill</button></div></div>`;
+  }
+  const us=db.users;
+  return `<h1>Customers</h1><div class="sub">Registered shoppers</div><div class="panel">${us.length?`<table><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th></tr>${us.map(u=>{const o=db.orders.filter(x=>x.email===u.email&&x.status!=="Cancelled");return `<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${o.length}</td><td>${inr(o.reduce((s,x)=>s+x.total,0))}</td></tr>`}).join("")}</table>`:'<div class="empty">None yet</div>'}</div>`;
+}
+function posList(q){return db.products.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())).map(p=>`<div class="pcell" data-act="badd" data-v="${p.id}"><div class="e">${p.emoji}</div><b style="font-size:13px">${esc(p.name)}</b><small>${inr(p.price)} · ${p.stock} in stock</small></div>`).join("")}
+function posFilter(v){$("plist").innerHTML=posList(v)}
+function productForm(id){
+  if(!needAdmin())return;
+  const p=id?prod(id):{name:"",cat:"Staples",unit:"",price:"",stock:"",emoji:"🛒"};
+  modal(`<h2 class="serif">${id?"Edit":"Add"} product</h2><div class="fld"><label>Name</label><input id="fn" value="${esc(p.name)}"></div><div class="fld"><label>Category</label><input id="fc" list="cl" value="${esc(p.cat)}"><datalist id="cl">${CATS().slice(1).map(c=>`<option>${c}</option>`).join("")}</datalist></div>
+  <div class="fld"><label>Unit (e.g. 1 kg)</label><input id="fu" value="${esc(p.unit)}"></div><div class="two" style="gap:10px"><div class="fld"><label>Price (₹)</label><input id="fp" type="number" min="0" value="${p.price}"></div><div class="fld"><label>Stock</label><input id="fs" type="number" min="0" value="${p.stock}"></div></div>
+  <div class="fld"><label>Emoji</label><input id="fe" value="${esc(p.emoji)}"></div><div class="err" id="fer"></div>
+  <div style="display:flex;gap:10px"><button class="btn ghost" data-act="closemodal">Cancel</button><button class="btn" style="flex:1" data-act="psave" data-v="${id}">Save</button></div>`);
+}
+function productSave(id){
+  if(!needAdmin())return;
+  const d={name:$("fn").value.trim(),cat:$("fc").value.trim()||"Other",unit:$("fu").value.trim(),price:+$("fp").value,stock:Math.floor(+$("fs").value),emoji:$("fe").value.trim()||"🛒"};
+  if(!d.name||!(d.price>=0)||$("fp").value===""||!(d.stock>=0)){$("fer").textContent="Fill name, price and stock correctly.";return}
+  if(id)Object.assign(prod(id),d);else db.products.push({id:Math.max(0,...db.products.map(p=>p.id))+1,...d});
+  save();closeModal();render();toast("Product saved");
+}
+function genBill(){
+  if(!needAdmin())return;
+  const l=cartLines(bill);if(!l.length)return toast("Add items first");
+  for(const x of l){if(prod(x.id).stock<x.qty)return toast(`Not enough stock: ${x.name}`)}
+  l.forEach(x=>prod(x.id).stock-=x.qty);
+  const t=calc(l,false),o={id:"AG"+(++db.seq),date:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),customer:$("bn").value.trim()||"Walk-in",email:"",phone:"",address:"",pay:$("bm").value,channel:"Counter",lines:l,...t,status:"Delivered"};
+  db.orders.push(o);save();bill={};render();showInvoice(o.id,false);
+}
+
+/* ---------- events (one delegated handler) ---------- */
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]");if(!el||el.tagName==="SELECT")return;
+  const a=el.dataset.act,v=el.dataset.v;
+  const A={
+    lrole:()=>{lrole=v;lmode="login";renderLogin()},lmode:()=>{lmode=lmode==="login"?"register":"login";renderLogin()},
+    logout,cat:()=>{cat=v;render()},ctab:()=>{ctab=v;render()},
+    add:()=>{if(!isCust())return;const p=prod(v);if((cart[v]||0)>=p.stock)return toast("No more stock");cart[v]=(cart[v]||0)+1;renderCustomer();toast(p.name+" added")},
+    opencart:()=>drawer(true),closecart:()=>drawer(false),
+    cplus:()=>{if(!isCust())return;if(cart[v]<prod(v).stock)cart[v]++;else toast("No more stock");renderCart();renderCustomer()},
+    cminus:()=>{if(!isCust())return;cart[v]--;renderCart();renderCustomer()},
+    checkout:checkoutForm,place:placeOrder,closemodal:closeModal,invoice:()=>showInvoice(v),
+    atab:()=>{if(!needAdmin())return;atab=v;render()},
+    pform:()=>productForm(+v),psave:()=>productSave(+v),
+    pdel:()=>{if(!needAdmin())return;if(confirm("Delete this product?")){db.products=db.products.filter(p=>p.id!=v);save();render()}},
+    badd:()=>{if(!needAdmin())return;if((bill[v]||0)>=prod(v).stock)return toast("No more stock");bill[v]=(bill[v]||0)+1;keepPos()},
+    bplus:()=>{if(!needAdmin())return;if(bill[v]<prod(v).stock)bill[v]++;keepPos()},bminus:()=>{if(!needAdmin())return;bill[v]--;keepPos()},
+    genbill:genBill
+  };
+  if(A[a])A[a]();
+});
+function keepPos(){const n=$("bn")?$("bn").value:"";renderAdmin();if($("bn"))$("bn").value=n}
+document.addEventListener("change",e=>{
+  if(e.target.dataset.act==="ostatus"){
+    if(!needAdmin()){render();return}
+    const o=db.orders.find(x=>x.id===e.target.dataset.v),ns=e.target.value;
+    if(ns==="Cancelled"&&o.status!=="Cancelled")o.lines.forEach(l=>{const p=prod(l.id);if(p)p.stock+=l.qty});
+    if(o.status==="Cancelled"&&ns!=="Cancelled")o.lines.forEach(l=>{const p=prod(l.id);if(p)p.stock=Math.max(0,p.stock-l.qty)});
+    o.status=ns;save();toast("Order "+o.id+" → "+ns);render();
+  }
+});
+function render(){ if(!S)renderLogin(); else if(isAdmin())renderAdmin(); else renderCustomer(); }
+render();
+</script>
+</body>
+</html>
